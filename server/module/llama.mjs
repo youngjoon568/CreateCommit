@@ -1,11 +1,15 @@
 import { LLM } from "llama-node";
 import { LLamaCpp } from "llama-node/dist/llm/llama-cpp.js";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const llama = new LLM(LLamaCpp);
 
 const Demo = async (msg) => {
     await llama.load({
-        modelPath: "/server/model/airoboros-13b-gpt4.ggmlv3.q4_0.bin",
+        modelPath: path.join(__dirname, "models", "airoboros-7b-gpt4.ggmlv3.q4_1.bin"),
         embedding: false,
         nCtx: 1024,
         seed: 0,
