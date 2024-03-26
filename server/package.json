@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "dev": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@llama-node/llama-cpp": "^0.1.6",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "llama-node": "^0.1.6",
+    "nodemon": "^3.1.0",
+    "socket.io": "^4.7.5"
+  }
+}
