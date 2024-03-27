@@ -17,7 +17,7 @@ const session = new LlamaChatSession({ context });
 
 const PORT = 5000;
 
-const EmojiList = {
+const oftenEmojiList = {
     "start": {
         emoji: "🎉",
         desc: "프로젝트 시작"
@@ -50,7 +50,7 @@ const EmojiList = {
         emoji: "🚀",
         desc: "배포"
     },
-    "work in progress": {
+    "work_in_progress": {
         emoji: "🚧",
         desc: "진행 중인 작업"
     },
@@ -74,6 +74,9 @@ const EmojiList = {
         emoji: "♻️",
         desc: "코드 리팩토링"
     },
+};
+
+const emojiList = {
     "ambulance": {
         emoji: "🚑️",
         desc: "심각한 버그 수정"
@@ -310,35 +313,75 @@ const io = new Server(server, {
     }
 });
 
+// function splitObjectByIndex(obj, index) {
+//     const keys = Object.keys(obj);
+//     const chunkSize = Math.ceil(keys.length / index);
+
+//     const result = [];
+//     for (let i = 0; i < index; i++) {
+//         const start = i * chunkSize;
+//         const end = start + chunkSize;
+//         const chunkKeys = keys.slice(start, end);
+//         const chunkObj = chunkKeys.reduce((acc, key) => {
+//             acc[key] = obj[key];
+//             return acc;
+//         }, {});
+//         result.push(chunkObj);
+//     };
+
+//     if (index !== result.length) {
+//         return result.slice(0, index);
+//     };
+
+//     return result;
+// };
+
+// function objectToText(obj) {
+//     let text = "";
+//     for (const key in obj) {
+//         if (obj.hasOwnProperty(key)) {
+//             const emojiInfo = obj[key];
+
+//             const name = String(key);
+//             const emoji = String(emojiInfo.emoji);
+//             const desc = String(emojiInfo.desc);
+
+//             text += `이모지 이름: ${name}, 이모지: ${emoji}, 이모지 설명: ${desc} \n`;
+//         }
+//     }
+//     return text;
+// };
+
+// const oftenEmojiListObjs = splitObjectByIndex(oftenEmojiList, 2);
+// const emojiListObjs = splitObjectByIndex(emojiList, 3);
+
+// const [oftenEmojiListObjOne, oftenEmojiListObjTwo] = oftenEmojiListObjs;
+// const [emojiListObjOne, emojiListObjTwo, emojiListObjThree] = emojiListObjs;
+
+// const oftenEmojiListObjOneText = objectToText(oftenEmojiListObjOne);
+// const oftenEmojiListObjTwoText = objectToText(oftenEmojiListObjTwo);
+// const emojiListObjOneText = objectToText(emojiListObjOne);
+// const emojiListObjTwoText = objectToText(emojiListObjTwo);
+// const emojiListObjThreeText = objectToText(emojiListObjThree);
+
+// const runDataLearning = async _ => {
+//     await session.prompt(oftenEmojiListObjOneText);
+//     await session.prompt(oftenEmojiListObjTwoText);
+//     await session.prompt(emojiListObjOneText);
+//     await session.prompt(emojiListObjTwoText);
+//     await session.prompt(emojiListObjThreeText);
+// }
+
+// runDataLearning();
+
 io.on("connection", (socket) => {
     console.log("클라이언트가 연결되었습니다.");
 
     socket.on("send_message", async (msg  = "") => {
 
-
-        for (const key in EmojiList) {
-            if (EmojiList.hasOwnProperty(key)) {
-                const emojiInfo = EmojiList[key];
-
-                const name = String(key);
-                const emoji = String(emojiInfo.emoji);
-                const desc = String(emojiInfo.desc);
-
-                if (msg.includes(name) || msg.includes(desc) || msg.includes(emoji)) {
-                    const response = await session.prompt(msg);
-                    console.log(response);
-
-                    console.log("텍스트 있음");
-                    
-                    socket.emit("receive_message", "로딩 중입니다.");
-                    socket.emit("receive_message", msg);
-
-                    break; 
-                } else {
-                    socket.emit("receive_message", "gitmoji와 같은 텍스트가 없습니다.");
-                }
-            };
-        };
+        const response = await session.prompt(msg);
+        console.log(response);
+        socket.emit("receive_message", `${response}`);
     });
 
     socket.on("disconnect", () => {
